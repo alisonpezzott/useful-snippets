@@ -1,0 +1,1 @@
+Get-ChildItem Env: | ConvertTo-Json -Depth 1 | Out-File -FilePath "C:\temp\env_vars.json"
