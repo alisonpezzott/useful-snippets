@@ -28,9 +28,9 @@ VAR __Prefix = IF( __Duration < 0, "-")
 
 // Output in text format
 VAR __Result =
-    IF(
-	__Value,
-        __Prefix &
+	IF(
+		__Value,
+		__Prefix &
 		CONCATENATEX(
 			{
 				FORMAT( __Hours,   "#0,0" ),
@@ -39,7 +39,7 @@ VAR __Result =
 			},
 			":"
 		)
-    )
+	)
 
 // Output
 RETURN
