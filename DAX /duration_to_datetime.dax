@@ -1,18 +1,18 @@
 Duration to datetime =
 
-// Reference measure on granularity 
-VAR __Duration = [Duration on seconds]
+// Reference measure in granularity 
+VAR __Duration = [Duration in seconds]
 	/* or
-		ROUNDUP( [Duration on minutes] * 60, 0 )
-		ROUNDUP( [Duration on hours] * 3600, 0 )
-		ROUNDUP( [Duration on days] * 86400, 0 )
+		ROUNDUP( [Duration in minutes] * 60,    0 )
+		ROUNDUP( [Duration in hours]   * 3600,  0 )
+		ROUNDUP( [Duration in days]    * 86400, 0 )
 	*/
 
 // Removes the signal
 VAR __Value = ABS( __Duration )
 
 // Extracts full hours
-VAR __Hours = TRUNC( DIVIDE( Value, 3600 ))
+VAR __Hours = TRUNC( DIVIDE( __Value, 3600 ))
 
 // Seconds that did not form complete hours
 VAR __AfterHours = MOD( __Value, 3600 )
@@ -29,7 +29,7 @@ VAR __Prefix = IF( __Duration < 0, "-")
 // Output in text format
 VAR __Result =
     IF(
-		__Value,
+	__Value,
         __Prefix &
 		CONCATENATEX(
 			{
