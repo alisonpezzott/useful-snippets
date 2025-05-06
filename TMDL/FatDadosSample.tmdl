@@ -1,0 +1,55 @@
+createOrReplace
+
+	table FatDados
+
+		measure 'Valor Total' = ```
+				SUM(FatDados[Valor]) 
+				```
+			formatString: "R$"\ #,0.##;-"R$"\ #,0.##;"R$"\ #,0.##
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		column Data
+			dataType: dateTime
+			formatString: Short Date
+			summarizeBy: none
+			sourceColumn: Data
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation UnderlyingDateTimeDataType = Date
+
+		column Valor
+			dataType: decimal
+			formatString: "R$"\ #,0.##;-"R$"\ #,0.##;"R$"\ #,0.##
+			summarizeBy: sum
+			sourceColumn: Valor
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		partition FatDados = m
+			mode: import
+			source =
+					let
+					    StartDate = Number.From(#date(2020, 1, 1)),
+					    EndDate = Number.From(Date.From(DateTime.LocalNow())),
+					    RootTable = Table.FromList(
+					        List.Transform({StartDate..EndDate}, Date.From),
+					        Splitter.SplitByNothing(),
+					        type table [Data=date]
+					    ),
+					    AddValue = Table.AddColumn(
+					        RootTable,
+					        "Valor",
+					        each Number.Round(Number.RandomBetween(250, 1000), 2),
+					        Currency.Type
+					    )
+					in
+					    AddValue
+
+		annotation PBI_NavigationStepName = Navigation
+
+		annotation PBI_ResultType = Table
+

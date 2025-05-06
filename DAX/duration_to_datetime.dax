@@ -1,0 +1,47 @@
+Duration to datetime = 
+
+-- Reference measure in granularity 
+VAR __Duration = [Duration in seconds]
+	/* or
+		ROUNDUP( [Duration in minutes] * 60,    0 )
+		ROUNDUP( [Duration in hours]   * 3600,  0 )
+		ROUNDUP( [Duration in days]    * 86400, 0 )
+	*/
+
+-- Removes the signal
+VAR __Value = ABS( __Duration )
+
+-- Extracts full hours
+VAR __Hours = TRUNC( DIVIDE( __Value, 3600 ))
+
+-- Seconds that did not form complete hours
+VAR __AfterHours = MOD( __Value, 3600 )
+
+-- Extracts the full minutes
+VAR __Minutes = TRUNC( DIVIDE( __AfterHours, 60 ))
+
+-- Seconds that did not form complete minutes
+VAR __Seconds = MOD( __AfterHours, 60)
+
+-- If the measure is negative then the signal is "-"
+VAR __Prefix = IF( __Duration < 0, "-")
+
+-- Output in text format
+VAR __Result =
+	IF(
+		__Value,
+		__Prefix &
+		CONCATENATEX(
+			{
+				FORMAT( __Hours,   "#0,0" ),
+				FORMAT( __Minutes, "00"   ),
+				FORMAT( __Seconds, "00"   )
+			},
+            [Value],
+			":"
+		)
+	)
+
+-- Output
+RETURN
+    __Result

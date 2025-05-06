@@ -1,0 +1,76 @@
+Duration to text in full = 
+
+-- Reference measure in granularity 
+VAR __Duration = [Duration in seconds]
+	/* or
+		ROUNDUP( [Duration in minutes] * 60,    0 )
+		ROUNDUP( [Duration in hours]   * 3600,  0 )
+		ROUNDUP( [Duration in days]    * 86400, 0 )
+	*/
+
+-- Removes the signal
+VAR __Value = ABS( __Duration )
+
+-- Extracts full days
+VAR __Days = TRUNC( DIVIDE( __Value, 86400 ))
+
+-- Extracts full hours
+VAR __Hours = TRUNC( DIVIDE( __Value - ( __Days * 86400 ), 3600 ))
+
+-- Seconds that did not form complete hours
+VAR __AfterHours = MOD( __Value, 3600 )
+
+-- Extracts the full minutes
+VAR __Minutes = TRUNC( DIVIDE( __AfterHours, 60 ))
+
+-- Seconds that did not form complete minutes
+VAR __Seconds = MOD( __AfterHours, 60)
+
+-- If the measure is negative then the signal is "-"
+VAR __Prefix = IF( __Duration < 0, "-")
+
+-- Suffixes for each granularity
+VAR __SuffixDays =    IF( __Days = 1,    " day, ",    " days, "    )
+VAR __SuffixHours =   IF( __Hours = 1,   " hour, ",   " hours, "   )
+VAR __SuffixMinutes = IF( __Minutes = 1, " minute, ", " minutes, " )
+VAR __SuffixSeconds = IF( __Seconds = 1, " second",   " seconds"   )
+
+
+-- Output in text format
+VAR __Result =
+	IF(
+		__Value,
+		__Prefix &
+		
+		-- Days
+		IF( 
+			__Days > 0, 
+			FORMAT( __Days, "0" ) & __SuffixDays, 
+			BLANK() 
+		) &
+		
+		-- Hours
+		IF( 
+			__Days > 0 || __Hours > 0, 
+			FORMAT( __Hours, "0" ) & __SuffixHours, 
+			BLANK() 
+		) &
+		
+		-- Minutes
+		IF(
+			__Days > 0 || __Hours > 0 || __Minutes > 0, 
+			FORMAT( __Minutes, "0" ) & __SuffixMinutes, 
+			BLANK() 
+		) & 
+		
+		-- Seconds
+		IF( 
+			__Days > 0 || __Hours > 0 || __Minutes > 0 || __Seconds > 0, 
+			FORMAT( __Seconds, "0" ) & __SuffixSeconds, 
+			BLANK() 
+		)
+	)
+
+-- Output
+RETURN
+    __Result
