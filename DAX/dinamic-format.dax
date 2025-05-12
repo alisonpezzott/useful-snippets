@@ -1,0 +1,15 @@
+VAR __Value = SELECTEDMEASURE()
+VAR __Ref = ABS(__Value)
+VAR __Format = 
+  SWITCH( 
+    TRUE(),
+      __Ref >= POWER(10, 12), "#,0,,,,.0 T; (#,0,,,,.0 T) ; 0",
+      __Ref >= POWER(10, 9),  "#,0,,,.0 B ; (#,0,,,.0 B)  ; 0",
+      __Ref >= POWER(10, 6),  "#,0,,.0 M  ; (#,0,,.0 M)   ; 0",
+      __Ref >= POWER(10, 3),  "#,0,.0 K   ; (#,0,.0 K)    ; 0",
+                      "#,0.0      ; (#,0.0)       ; 0"
+    )
+VAR __Result =
+  """" & FORMAT(__Value, __Format) & """"
+RETURN
+    __Result
