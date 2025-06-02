@@ -2,7 +2,8 @@ To remove the rows with `lineageTag` in the TMDL view in the Power BI Desktop.
 
 Press CTRL + H  
 Click on `.*`  
-Fill `^\s*lineageTag:.*\r?\n`  
+Fill `^\s*lineageTag:.*\r?\n`     or     ^\s*lineageTag:.*(\r?\n)?   (VSCODE)
+
 Press CTRL + ALT + ENTER
 
 ### Explanation
