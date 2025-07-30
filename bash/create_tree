@@ -1,0 +1,1 @@
+cd /c/repos/pyfabricops && tree src -I "__pycache__" || find src -type f -name "*.py" | grep -v __pycache__ | sort
