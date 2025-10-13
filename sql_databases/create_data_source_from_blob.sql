@@ -14,3 +14,14 @@ WITH (
     LOCATION = 'https://your_blob.blob.core.windows.net/your_container',
     CREDENTIAL = cred_blob
 )
+
+BULK INSERT dbo.customer
+FROM 'customer.csv'                   
+WITH (
+    DATA_SOURCE     = 'ds_blob_contoso',
+    FIRSTROW        = 1,             
+    FIELDTERMINATOR = ',',           
+    ROWTERMINATOR   = '0x0A',         
+    CODEPAGE        = '1251',        
+    TABLOCK
+)
